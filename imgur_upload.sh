@@ -49,16 +49,9 @@ echo 'select region'
 scrot $@ "$imageFile"
 echo "saved as \"$imageFile\"";
 
-#base64 encode the imageFile to postFile
-postFile=`tempfile`
-base64 "$imageFile" >> "$postFile"
-
 #try to upload to imgur
 echo 'uploading to imgur...'
-response=`curl -s -H "Authorization: Client-ID $clientId" --data-urlencode "image@$postFile" 'https://api.imgur.com/3/image.xml'`
-
-#remove the base64 file
-rm "$postFile"
+response=`curl -s -H "Authorization: Client-ID $clientId" -F image=@$imageFile 'https://api.imgur.com/3/image.xml'`
 
 #search imgur's response for the link
 regex="<link>(.*)<\/link>"
