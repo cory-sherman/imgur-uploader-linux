@@ -45,7 +45,6 @@ cd `dirname "$0"`
 
 #capture screnshot
 imageFile=`tempfile --suffix=.png`
-echo 'select region'
 scrot $@ "$imageFile"
 echo "saved as \"$imageFile\"";
 
