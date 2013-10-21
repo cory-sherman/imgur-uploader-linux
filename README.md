@@ -14,12 +14,20 @@ Requirements
 * `libnotify`
 * `xdotool`
 * `xterm`
+* `xclip`
 
 ---
 
-Install on Ubuntu/Mint
+Install
 ---
-`sudo apt-get install bash curl scrot libnotify-bin xdotool xterm`  
+
+###Install on Ubuntu/Mint###
+`sudo apt-get install bash curl scrot libnotify-bin xdotool xterm xclip git`  
+`git clone https://github.com/cory-sherman/imgur-uploader-linux.git`
+
+
+###Install on Arch###
+`sudo pacman -S --needed bash curl scrot libnotifyxdotool xterm xclip git`  
 `git clone https://github.com/cory-sherman/imgur-uploader-linux.git`
 
 ---
