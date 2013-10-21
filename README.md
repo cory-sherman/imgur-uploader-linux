@@ -38,7 +38,8 @@ Create a keyboard shortcut to `imgur_upload_non-interactive.sh`.
 By default, the entire screen is captured and uploaded.
 The address is placed in your clipboard and displayed as a notification.
 
-If you want to capture only the active window, create a shortcut to `imgur_upload_non-interactive.sh -u`.
+If you want to capture only the active window, create a shortcut to `imgur_upload_non-interactive.sh -u`.  
+_Note: not all `scrot` configurations accept `-u`. See `man scrot`._
 
 If you want to select an arbitrary rectangle to capture, create a shortcut to `imgur_upload_non-interactive.sh -s`.
 When you activate it, click and drag to select a rectangle.
