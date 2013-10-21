@@ -43,14 +43,23 @@ fi
 
 cd `dirname "$0"`
 
+#  $1 exit status
+#  $2 output string
+function finish
+{
+  notify-send "$2"
+  echo "$2"
+  exit $1
+}
+
 #capture screnshot
-imageFile=`tempfile --suffix=.png`
-scrot $@ "$imageFile"
+imageFile=`mktemp --suffix=.png || tempfile --suffix=.png`
+scrot $@ "$imageFile" || finish 1 "Did not capture screenshot"
 echo "saved as \"$imageFile\"";
 
 #try to upload to imgur
 echo 'uploading to imgur...'
-response=`curl -s -H "Authorization: Client-ID $clientId" -F image=@$imageFile 'https://api.imgur.com/3/image.xml'`
+response=`curl -s -H "Authorization: Client-ID $clientId" -F image=@$imageFile 'https://api.imgur.com/3/image.xml'` || finish 1 'Error: Could not reach imgur server.'
 
 #search imgur's response for the link
 regex="<link>(.*)<\/link>"
@@ -66,48 +75,33 @@ then
 
   #for some reason, xclip doesn't work in a background terminal
   #so, we save the imgurUrl if imgur_upload_non-interactive called us
-  if [[ -e imgur_upload_url ]]
-  then
-     echo "$imgurUrl" > imgur_upload_url
-  fi
+  [[ -e imgur_upload_url ]] && echo "$imgurUrl" > imgur_upload_url
 
   outputString="Uploaded to \"$imgurUrl\". Address copied to clipboard."
-    
+  
+  #append the delete code if it exists
   regex="<deletehash>(.*)</deletehash>"
-  if [[ $response =~ $regex ]]
-  then
-    outputString="$outputString Delete code: \"${BASH_REMATCH[1]}\""
-  fi
-
-  returnCode=0
+  [[ $response =~ $regex ]] && outputString="$outputString Delete code: \"${BASH_REMATCH[1]}\"."
 
   #remove the image, since imgur hosts it now
   rm "$imageFile"
 
+  finish 0 "$outputString"
+
 else
-  #there was an error somewhere along the way, most likely curl couldn't connect, or imgur didn't like the clientId
+  #there was an error somewhere along the way
 
+  #backup the image
   imageBackup="$backupDir/`date --rfc-3339=ns|tr ' ' '_'`.png"
-
   mkdir -p `dirname "$imageBackup"`
   mv "$imageFile" "$imageBackup"
 
-  outputString="Error uploading to imgur! File saved to \"$imageBackup\". Error details:"
+  outputString="Error uploading to imgur! File saved to \"$imageBackup\"."
 
-  #did imgur send an error?
+  #if imgur sent an error,
+  #append imgur's error to output
   regex="<error>(.*)<\/error>"
-  if [[ $response =~ $regex ]]
-  then
-    #append imgur's error to output
-    outputString="$outputString \"${BASH_REMATCH[1]}\""
-  else
-    outputString="$outputString imgur did not respond."
-  fi
-
-  returnCode=1
-    
+  [[ $response =~ $regex ]] && outputString="$outputString Error details: \"${BASH_REMATCH[1]}\"."
+  
+  finish 1 "$outputString"
 fi
-
-notify-send "$outputString"
-echo "$outputString"
-exit $returnCode
