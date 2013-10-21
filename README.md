@@ -19,7 +19,8 @@ Requirements
 
 Install on Ubuntu/Mint
 ---
-`sudo apt-get install bash curl scrot libnotify-bin xdotool xterm`
+`sudo apt-get install bash curl scrot libnotify-bin xdotool xterm`  
+`git clone https://github.com/cory-sherman/imgur-uploader-linux.git`
 
 ---
 
