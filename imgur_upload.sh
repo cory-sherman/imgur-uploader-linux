@@ -44,7 +44,7 @@ fi
 cd `dirname "$0"`
 
 #capture screnshot
-imageFile=`tempfile --suffix=.png`
+imageFile=`mktemp --suffix=.png || tempfile --suffix=.png`
 scrot $@ "$imageFile"
 echo "saved as \"$imageFile\"";
 
