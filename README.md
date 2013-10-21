@@ -27,7 +27,7 @@ Install
 
 
 ###Install on Arch###
-`sudo pacman -S --needed bash curl scrot libnotifyxdotool xterm xclip git`  
+`sudo pacman -S --needed bash curl scrot libnotify xdotool xterm xclip git`  
 `git clone https://github.com/cory-sherman/imgur-uploader-linux.git`
 
 ---
